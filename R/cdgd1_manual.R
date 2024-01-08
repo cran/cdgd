@@ -219,9 +219,9 @@
 #' data[,G] <- as.numeric(data[,G])-1
 #'
 #' GgivenQ.Pred <- rep(NA, nrow(data))
-#' GgivenQ.Pred[sample2] <- stats::predict(DgivenGQ.Model.sample1,
+#' GgivenQ.Pred[sample2] <- stats::predict(GgivenQ.Model.sample1,
 #'     newdata = data[sample2,], type="prob")[,2]
-#' GgivenQ.Pred[sample1] <- stats::predict(DgivenGQ.Model.sample2,
+#' GgivenQ.Pred[sample1] <- stats::predict(GgivenQ.Model.sample2,
 #'     newdata = data[sample1,], type="prob")[,2]
 #'
 #'
@@ -242,9 +242,9 @@
 
 
 cdgd1_manual <- function(Y,D,G,
-                     YgivenGXQ.Pred_D0,YgivenGXQ.Pred_D1,DgivenGXQ.Pred,
-                     Y0givenQ.Pred_G0,Y0givenQ.Pred_G1,Y1givenQ.Pred_G0,Y1givenQ.Pred_G1,DgivenQ.Pred_G0,DgivenQ.Pred_G1,GgivenQ.Pred,
-                     data,alpha=0.05) {
+                         YgivenGXQ.Pred_D0,YgivenGXQ.Pred_D1,DgivenGXQ.Pred,
+                         Y0givenQ.Pred_G0,Y0givenQ.Pred_G1,Y1givenQ.Pred_G0,Y1givenQ.Pred_G1,DgivenQ.Pred_G0,DgivenQ.Pred_G1,GgivenQ.Pred,
+                         data,alpha=0.05) {
 
   data <- as.data.frame(data)
 
