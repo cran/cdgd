@@ -1,3 +1,6 @@
+# cdgd 1.0.0
+
+* The package now accommodates sampling weights.
 
 # cdgd 0.3.5
 
