@@ -8,6 +8,7 @@
 #' @param Y Outcome. The name of a numeric variable.
 #' @param D Treatment status. The name of a binary numeric variable taking values of 0 and 1.
 #' @param G Advantaged group membership. The name of a binary numeric variable taking values of 0 and 1.
+#' @param Q Conditional set. A vector of variable names.
 #' @param YgivenGXQ.Pred_D0 A numeric vector of predicted Y values given X, G, and D=0. Vector length=nrow(data).
 #' @param YgivenGXQ.Pred_D1 A numeric vector of predicted Y values given X, G, and D=1. Vector length=nrow(data).
 #' @param DgivenGXQ.Pred A numeric vector of predicted D values given X and G. Vector length=nrow(data).
@@ -226,7 +227,7 @@
 #'     newdata = data[sample1,], type="prob")[,2]
 #'
 #'
-#' results <- cdgd1_manual(Y=Y,D=D,G=G,
+#' results <- cdgd1_manual(Y=Y,D=D,G=G,Q=Q,
 #'                         YgivenGXQ.Pred_D0=YgivenGXQ.Pred_D0,
 #'                         YgivenGXQ.Pred_D1=YgivenGXQ.Pred_D1,
 #'                         DgivenGXQ.Pred=DgivenGXQ.Pred,
@@ -242,7 +243,7 @@
 #' results}
 
 
-cdgd1_manual <- function(Y,D,G,
+cdgd1_manual <- function(Y,D,G,Q,
                          YgivenGXQ.Pred_D0,YgivenGXQ.Pred_D1,DgivenGXQ.Pred,
                          Y0givenQ.Pred_G0,Y0givenQ.Pred_G1,Y1givenQ.Pred_G0,Y1givenQ.Pred_G1,DgivenQ.Pred_G0,DgivenQ.Pred_G1,GgivenQ.Pred,
                          data,alpha=0.05,weight=NULL) {
@@ -272,12 +273,15 @@ cdgd1_manual <- function(Y,D,G,
   IPO_D0 <- (1-data[,D])/(1-DgivenGXQ.Pred)/mean((1-data[,D])/(1-DgivenGXQ.Pred))*(data[,Y]-YgivenGXQ.Pred_D0) + YgivenGXQ.Pred_D0
   IPO_D1 <- data[,D]/DgivenGXQ.Pred/mean(data[,D]/DgivenGXQ.Pred)*(data[,Y]-YgivenGXQ.Pred_D1) + YgivenGXQ.Pred_D1
 
+  data_temp <- data[,c(G,Q)]
+
   if (is.null(weight)) {
     weight <- rep(1, nrow(data))
     tr.weight <- rep(1, nrow(data))
   } else {
     weight <- data[,weight]
-    tr.weight <- weight/stats::predict(stats::lm(stats::as.formula(paste("weight", paste(paste("data[,G]","data[,Q]",sep="*"),collapse="+"), sep="~"))))
+    data_temp$weight <- weight
+    tr.weight <- weight/stats::predict(stats::lm(stats::as.formula(paste("weight", paste(paste(G,Q,sep="*"),collapse="+"), sep="~")), data=data_temp))
   }
   # tr.weight (transformed weight) is the original weight divided by E(weight|G,Q)
 
